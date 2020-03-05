@@ -443,7 +443,7 @@
  * Short-cuts to some useful commands (macros)
  */
 #define CONFIG_EXTRA_ENV_SETTINGS				\
-	"loadaddr=0x08007fc0\0"					\
+	"loadaddr=0x80007fc0\0"					\
 	"args=setenv bootargs " CONFIG_BOOTARGS "\0"		\
 	"addip=setenv bootargs ${bootargs} "			\
 		"ip=${ipaddr}:${serverip}:${gatewayip}:"	\
@@ -474,5 +474,26 @@
  */
 #define CONFIG_OF_LIBFDT
 #define CONFIG_SYS_BOOTMAPSZ		CONFIG_SYS_RAM_SIZE
+
+/*
+ * MMC Configuration
+ * FIXME: Ethernet doesn't work just after power-on with MMC enabled
+ */
+/* #define CONFIG_MMC     1 */
+
+#ifdef CONFIG_MMC
+#define CONFIG_FSL_ESDHC
+#define CONFIG_SYS_FSL_ESDHC_ADDR	0x400B1000
+#define CONFIG_CMD_MMC
+#define CONFIG_GENERIC_MMC
+#define CONFIG_CMD_EXT2
+#define CONFIG_CMD_FAT
+#define CONFIG_CMD_FAT_MALLOC
+#define CONFIG_DOS_PARTITION
+#define CONFIG_SYS_FSL_ERRATUM_ESDHC111
+#define CONFIG_MMC_RETRY_SCR_FIX
+#undef CONFIG_SYS_FSL_ESDHC_USE_PIO
+#undef CONFIG_ESDHC_NO_SNOOP
+#endif
 
 #endif /* __CONFIG_H */

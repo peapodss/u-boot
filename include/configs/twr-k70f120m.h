@@ -308,6 +308,40 @@
 #define CONFIG_MONITOR_IS_IN_RAM	1
 
 /*
+ * Framebuffer configuration
+ */
+#define CONFIG_LCD
+
+#ifdef CONFIG_LCD
+
+#define CONFIG_VIDEO_IMXFB
+#define CONFIG_LCD_TWR_LCD_RGB
+
+#define CONFIG_LCD_BACKLIGHT_PORT	3  /* Port D */
+#define CONFIG_LCD_BACKLIGHT_PIN	2  /* Pin 2  */
+#define CONFIG_LCD_BACKLIGHT_VAL	1  /* High   */
+
+#define CONFIG_LCD_ENABLE_PORT		2  /* Port C */
+#define CONFIG_LCD_ENABLE_PIN		18 /* Pin 18 */
+#define CONFIG_LCD_ENABLE_VAL		1  /* High   */
+
+/* Memory for framebuffer: 32-bit 480x272 */
+#define CONFIG_FB_LEN	0x80000
+#define CONFIG_FB_ADDR	(CONFIG_SYS_RAM_ALIAS \
+			+ CONFIG_SYS_RAM_SIZE \
+			- CONFIG_SYS_MALLOC_EXT_LEN \
+			- CONFIG_FB_LEN)
+
+#define CONFIG_SPLASH_SCREEN
+#define CONFIG_SPLASH_SCREEN_ALIGN
+#define CONFIG_BMP
+#undef CONFIG_CMD_BMP
+#define CONFIG_BMP_24BPP
+#define LCD_BPP LCD_COLOR32
+
+#endif /* CONFIG_LCD */
+
+/*
  * Enable all those monitor commands that are needed
  */
 #include <config_cmd_default.h>
@@ -353,10 +387,15 @@
 #define CONFIG_MISC_INIT_R
 
 /*
+ * Avoid re-directing stdout to LCD when splashimage is not defined
+ */
+#define CONFIG_SYS_CONSOLE_IS_IN_ENV
+
+/*
  * Short-cuts to some useful commands (macros)
  */
 #define CONFIG_EXTRA_ENV_SETTINGS				\
-	"loadaddr=0x08007fc0\0"					\
+	"loadaddr=0x80007fc0\0"					\
 	"addip=setenv bootargs ${bootargs} "			\
 		"ip=${ipaddr}:${serverip}:${gatewayip}:"	\
 			"${netmask}:${hostname}:eth0:off\0"	\
@@ -364,6 +403,7 @@
 	"ipaddr=172.17.6.36\0"					\
 	"serverip=172.17.0.1\0"					\
 	"image=k70/uImage\0"					\
+	"stdin=serial\0"					\
 	"netboot=tftp ${image};run addip;bootm\0"		\
 	"flashaddr=00100000\0"					\
 	"flashboot=nboot ${loadaddr} 0 ${flashaddr};"		\
@@ -377,5 +417,25 @@
  */
 #define CONFIG_SETUP_MEMORY_TAGS
 #define CONFIG_CMDLINE_TAG
+
+/*
+ * MMC Configuration
+ */
+#define CONFIG_MMC     1
+
+#ifdef CONFIG_MMC
+#define CONFIG_FSL_ESDHC
+#define CONFIG_SYS_FSL_ESDHC_ADDR      0x400B1000
+#define CONFIG_CMD_MMC
+#define CONFIG_GENERIC_MMC
+#define CONFIG_CMD_EXT2
+#define CONFIG_CMD_FAT
+#define CONFIG_CMD_FAT_MALLOC
+#define CONFIG_DOS_PARTITION
+#define CONFIG_SYS_FSL_ERRATUM_ESDHC111
+#define CONFIG_MMC_RETRY_SCR_FIX
+#undef CONFIG_SYS_FSL_ESDHC_USE_PIO
+#undef CONFIG_ESDHC_NO_SNOOP
+#endif
 
 #endif /* __CONFIG_H */
